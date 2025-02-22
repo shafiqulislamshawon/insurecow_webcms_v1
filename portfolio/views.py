@@ -94,18 +94,17 @@ def category_portfolio_view(request, category_id):
 
 
 # View for getting active portfolios by category
-def portfolio_view(request, category_id):
+def portfolio_view(request):
     try:
         # Get the category using the category_id (UUID)
-        category = get_object_or_404(Category, id=category_id)
 
         # Get all active portfolios for the given category
-        portfolios = Portfolio.objects.filter(category=category, is_active=True).order_by('-created_at')
+        portfolios = Portfolio.objects.filter(is_active=True).order_by('-created_at')
 
         if not portfolios:
             return JsonResponse({
                 "status": "error",
-                "message": "No active portfolios found for this category",
+                "message": "No active portfolios found",
                 "data": None
             }, status=404)
 
