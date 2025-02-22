@@ -6,3 +6,5 @@ from .models import *
 admin.site.register(Logo)
 admin.site.register(Slider)
 admin.site.register(MenuItem)
+admin.site.register(ContactUs)
+admin.site.register(Gallery)
