@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'WebCmsService.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',
+        'NAME': 'insurecow_webcms_prod',
         'USER': 'dbmasteruser',
         'PASSWORD': 'sZi)L(^nk:7p`x[i&S!`*~bk83Lig;DH',
         'HOST': 'ls-eece619cae21379b158abf94d901c94c9d82b253.cvgfhs4irem7.ap-south-1.rds.amazonaws.com',
