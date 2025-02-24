@@ -25,8 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(f'{version}', include('core.urls')),
     path(f'{version}portfolio/', include('portfolio.urls')),
-    
-    
+    path(f'{version}insurance/', include('insurance.urls')),
+
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT})
 ]
