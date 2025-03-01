@@ -73,6 +73,7 @@ def category_portfolio_view(request, category_id):
                 "total_return_max": str(portfolio.total_return_max),
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "description": portfolio.description,
+                "extra_data": portfolio.extra_data,
                 "created_at": portfolio.created_at,
                 "updated_at": portfolio.updated_at
             })
@@ -124,6 +125,7 @@ def portfolio_view(request):
                 "total_return_max": str(portfolio.total_return_max),
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "description": portfolio.description,
+                "extra_data": portfolio.extra_data,
                 "created_at": portfolio.created_at,
                 "updated_at": portfolio.updated_at
             })
@@ -166,6 +168,7 @@ def portfolio_details_view(request, portfolio_id):
                 "total_return_max": str(portfolio.total_return_max),
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "description": portfolio.description,
+                "extra_data": portfolio.extra_data,
                 "is_active": portfolio.is_active,
                 "created_at": portfolio.created_at,
                 "updated_at": portfolio.updated_at,

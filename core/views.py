@@ -2,7 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
-from .models import ContactUs, Gallery, FAQ
+from .models import ContactUs, Gallery, FAQ, Testimonial
 from django.core.exceptions import ValidationError
 import re
 
@@ -46,7 +46,6 @@ def logo_view(request):
             "data": None
         }, status=500)
 
-
 def slider_list_view(request):
     try:
         # Get all sliders
@@ -79,6 +78,44 @@ def slider_list_view(request):
         return JsonResponse({
             "status": "error",
             "message": "An error occurred while retrieving sliders",
+            "error": str(e),
+            "data": None
+        }, status=500)
+
+def testimonial_view(request):
+    try:
+        # Get all sliders
+        testimonials = Testimonial.objects.filter(is_active=True).order_by('-id')
+
+        if not testimonials.exists():
+            return JsonResponse({
+                "status": "error",
+                "message": "No testimonials found",
+                "data": []
+            }, status=404)
+
+        testimonial_data = []
+        for testimonial in testimonials:
+            testimonial_data.append({
+                "id": testimonial.id,
+                "name": testimonial.name,
+                "designation": testimonial.designation,
+                "quotes": testimonial.quotes,
+                "image_url": request.build_absolute_uri(testimonial.image.url) if testimonial.image else None,
+                "created_at": testimonial.created_at,
+                "updated_at": testimonial.updated_at
+            })
+
+        return JsonResponse({
+            "status": "success",
+            "message": "Testimonials retrieved successfully",
+            "data": testimonial_data
+        }, status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            "status": "error",
+            "message": "An error occurred while retrieving testimonials",
             "error": str(e),
             "data": None
         }, status=500)

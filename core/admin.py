@@ -9,3 +9,4 @@ admin.site.register(MenuItem)
 admin.site.register(ContactUs)
 admin.site.register(Gallery)
 admin.site.register(FAQ)
+

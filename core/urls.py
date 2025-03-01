@@ -5,6 +5,7 @@ urlpatterns = [
     path('', ping, name='ping'),
     path('logo/', logo_view, name='logo'),
     path('slider/', slider_list_view, name='slider-list'),
+    path('testimonials/', testimonial_view, name='testimonials-list'),
     path('menu/', menu_view, name='menu-list'),
 
     path('contact-us/', contact_us_view, name='contact-us'),

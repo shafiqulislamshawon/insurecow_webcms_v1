@@ -1,0 +1,4 @@
+Import Export model in admin.
+
+
+Json field needs to be included in the portfolio model
