@@ -7,6 +7,7 @@ admin.site.register(Logo)
 admin.site.register(Slider)
 admin.site.register(MenuItem)
 admin.site.register(ContactUs)
+admin.site.register(Testimonial)
 admin.site.register(Gallery)
 admin.site.register(FAQ)
 
