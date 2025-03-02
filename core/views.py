@@ -1,8 +1,10 @@
 import json
+
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
-from .models import ContactUs, Gallery, FAQ, Testimonial
+from .models import ContactUs, Gallery, FAQ, Testimonial, BaseCategory, BaseCard
 from django.core.exceptions import ValidationError
 import re
 
@@ -333,4 +335,163 @@ def get_faqs(request):
             "status": "error",
             "message": "An error occurred while retrieving the FAQs",
             "error": str(e),
+        }, status=500)
+
+# View for getting a list of all categories
+def category_view(request):
+    try:
+        # Get all categories
+        categories = BaseCategory.objects.all().order_by('-id')
+
+        if not categories:
+            return JsonResponse({
+                "status": "error",
+                "message": "No base categories found",
+                "data": None
+            }, status=404)
+
+        # Prepare the list of categories
+        category_list = []
+        for category in categories:
+            category_list.append({
+                "id": category.id,
+                "name": category.name,
+                "description": category.description
+            })
+
+        response_data = {
+            "status": "success",
+            "message": "Base Categories retrieved successfully",
+            "data": category_list
+        }
+        return JsonResponse(response_data, status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            "status": "error",
+            "message": "An error occurred while retrieving base categories",
+            "error": str(e),
+            "data": None
+        }, status=500)
+
+
+# View for getting active portfolios by category
+def category_portfolio_view(request, category_id):
+    try:
+        # Get the category by category_id (UUID)
+        category = get_object_or_404(BaseCategory, id=category_id)
+
+        # Get all active portfolios for the given category
+        card = BaseCard.objects.filter(category=category, is_active=True).order_by('-created_at')
+
+        if not card:
+            return JsonResponse({
+                "status": "error",
+                "message": "No active card found for this category",
+                "data": None
+            }, status=404)
+
+        # Prepare the list of portfolios for the category
+        portfolio_list = []
+        for portfolio in card:
+            portfolio_list.append({
+                "id": portfolio.id,
+                "name": portfolio.title,
+                "category": portfolio.category,
+                "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
+                "extra_data": portfolio.extra_data,
+                "is_active": portfolio.is_active,
+                "created_at": portfolio.created_at,
+                "updated_at": portfolio.updated_at,
+            })
+
+        response_data = {
+            "status": "success",
+            "message": "Base card retrieved successfully",
+            "data": portfolio_list
+        }
+        return JsonResponse(response_data, status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            "status": "error",
+            "message": "An error occurred while retrieving Base card by category",
+            "error": str(e),
+            "data": None
+        }, status=500)
+
+
+# View for getting active portfolios by category
+def portfolio_view(request):
+    try:
+        # Get the category using the category_id (UUID)
+
+        # Get all active portfolios for the given category
+        card = BaseCard.objects.filter(is_active=True).order_by('-created_at')
+
+        if not card:
+            return JsonResponse({
+                "status": "error",
+                "message": "No active Base Card found",
+                "data": None
+            }, status=404)
+
+        # Prepare the list of portfolios to be returned
+        portfolio_list = []
+        for portfolio in card:
+            portfolio_list.append({
+                "id": portfolio.id,
+                "name": portfolio.title,
+                "category": portfolio.category,
+                "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
+                "extra_data": portfolio.extra_data,
+                "is_active": portfolio.is_active,
+                "created_at": portfolio.created_at,
+                "updated_at": portfolio.updated_at,
+            })
+
+        response_data = {
+            "status": "success",
+            "message": "Base card retrieved successfully",
+            "data": portfolio_list
+        }
+        return JsonResponse(response_data, status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            "status": "error",
+            "message": "An error occurred while retrieving Base card",
+            "error": str(e),
+            "data": None
+        }, status=500)
+
+
+# View for getting details of a specific portfolio
+def portfolio_details_view(request, portfolio_id):
+    try:
+        # Get the portfolio using the portfolio_id (UUID)
+        portfolio = get_object_or_404(BaseCard, id=portfolio_id)
+
+        response_data = {
+            "status": "success",
+            "message": "Base Card details retrieved successfully",
+            "data": {
+                "id": portfolio.id,
+                "name": portfolio.title,
+                "category": portfolio.category,
+                "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
+                "extra_data": portfolio.extra_data,
+                "is_active": portfolio.is_active,
+                "created_at": portfolio.created_at,
+                "updated_at": portfolio.updated_at,
+            }
+        }
+        return JsonResponse(response_data, status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            "status": "error",
+            "message": "An error occurred while retrieving portfolio details",
+            "error": str(e),
+            "data": None
         }, status=500)
