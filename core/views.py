@@ -397,7 +397,7 @@ def category_portfolio_view(request, category_id):
             portfolio_list.append({
                 "id": portfolio.id,
                 "name": portfolio.title,
-                "category": portfolio.category,
+                "category": portfolio.category.name,
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "extra_data": portfolio.extra_data,
                 "is_active": portfolio.is_active,
@@ -442,7 +442,7 @@ def portfolio_view(request):
             portfolio_list.append({
                 "id": portfolio.id,
                 "name": portfolio.title,
-                "category": portfolio.category,
+                "category": portfolio.category.name,
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "extra_data": portfolio.extra_data,
                 "is_active": portfolio.is_active,
@@ -478,7 +478,7 @@ def portfolio_details_view(request, portfolio_id):
             "data": {
                 "id": portfolio.id,
                 "name": portfolio.title,
-                "category": portfolio.category,
+                "category": portfolio.category.name,
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "extra_data": portfolio.extra_data,
                 "is_active": portfolio.is_active,
