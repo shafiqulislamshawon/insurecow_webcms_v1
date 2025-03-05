@@ -123,45 +123,48 @@ def testimonial_view(request):
         }, status=500)
 
 
+from django.http import JsonResponse
+from .models import MenuItem
+
+def get_menu_tree(menu_item):
+    """ Recursively fetch submenu items """
+    sub_menu_items = MenuItem.objects.filter(parent=menu_item, is_active=True).order_by('id')
+    return [
+        {
+            "title": sub_item.title,
+            "link": sub_item.link,
+            "sub_menu": get_menu_tree(sub_item)  # Recursively fetch submenus
+        }
+        for sub_item in sub_menu_items
+    ]
+
 def menu_view(request):
     try:
-        # Fetch all top-level menu items (those without a parent)
-        menu_items = MenuItem.objects.filter(parent__isnull=True,is_active=True ).order_by('id')
+        # Fetch only top-level menu items (parent is NULL)
+        menu_items = MenuItem.objects.filter(parent__isnull=True, is_active=True).order_by('id')
 
-        if not menu_items:
+        if not menu_items.exists():
             return JsonResponse({
                 "status": "error",
                 "message": "No menu items found",
                 "data": None
             }, status=404)
 
-        # Prepare the menu data manually
-        menu_data = []
-        for item in menu_items:
-            # Fetch the sub-menu items
-            sub_menu_items = MenuItem.objects.filter(parent=item,is_active=True).order_by('id')
-            sub_menu_data = []
-
-            for sub_item in sub_menu_items:
-                sub_menu_data.append({
-                    "title": sub_item.title,
-                    "link": sub_item.link
-                })
-
-            # Add the current menu item to the menu data list
-            menu_data.append({
+        # Construct hierarchical menu structure
+        menu_data = [
+            {
                 "title": item.title,
                 "link": item.link,
-                "sub_menu": sub_menu_data
-            })
+                "sub_menu": get_menu_tree(item)  # Fetch nested submenus
+            }
+            for item in menu_items
+        ]
 
-        response_data = {
+        return JsonResponse({
             "status": "success",
             "message": "Menu retrieved successfully",
             "data": menu_data
-        }
-
-        return JsonResponse(response_data, status=200)
+        }, status=200)
 
     except Exception as e:
         return JsonResponse({
@@ -397,7 +400,7 @@ def category_portfolio_view(request, category_id):
             portfolio_list.append({
                 "id": portfolio.id,
                 "name": portfolio.title,
-                "category": portfolio.category,
+                "category": portfolio.category.name,
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "extra_data": portfolio.extra_data,
                 "is_active": portfolio.is_active,
@@ -442,7 +445,7 @@ def portfolio_view(request):
             portfolio_list.append({
                 "id": portfolio.id,
                 "name": portfolio.title,
-                "category": portfolio.category,
+                "category": portfolio.category.name,
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "extra_data": portfolio.extra_data,
                 "is_active": portfolio.is_active,
@@ -478,7 +481,7 @@ def portfolio_details_view(request, portfolio_id):
             "data": {
                 "id": portfolio.id,
                 "name": portfolio.title,
-                "category": portfolio.category,
+                "category": portfolio.category.name,
                 "image_url": request.build_absolute_uri(portfolio.image.url) if portfolio.image else None,
                 "extra_data": portfolio.extra_data,
                 "is_active": portfolio.is_active,
