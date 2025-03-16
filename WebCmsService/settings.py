@@ -25,6 +25,8 @@ SECRET_KEY = 'django-insecure-)b*^hsok#78ral5ivu2(gs_!!3b#$0%kb9jc93)848fnsz!b12
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -146,8 +148,14 @@ MEDIA_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Next.js frontend URL
-    "http://192.168.68.70:3000",
-    "http://192.168.68.74:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+   # "http://localhost:3000",  # Next.js frontend URL
+   # "http://192.168.68.70:3000",
+   # "http://192.168.68.74:3000",
+   # "https://dev.insurecow.com",
+   # "http://dev.insurecow.com",
+   # "http://65.181.111.172",
+   # "https://65.181.111.172",
+#   *
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
